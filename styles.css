@@ -1,0 +1,166 @@
+:root {
+    --bg: #000000;
+    --silver: #C0C0C0;
+    --blue: #0056b3;
+    --neon-blue: #00F3FF;
+    --gold: #FFD700;
+    --green: #00FF00;
+    --card-bg: #0a0a0a;
+    --border: 1px solid rgba(192, 192, 192, 0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+body { background: var(--bg); color: var(--silver); overflow-x: hidden; min-height: 100vh; }
+.hidden { display: none !important; }
+.fade-in { animation: fade 0.6s ease-out; }
+@keyframes fade { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* === OVERLAY CARGA BÚSQUEDA === */
+#search-loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95); z-index: 5000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.loader-ring {
+    width: 60px; height: 60px; border: 4px solid transparent; border-top-color: var(--neon-blue);
+    border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+}
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+.blink-text { color: var(--neon-blue); animation: blink 1s infinite; font-family: 'Orbitron'; }
+@keyframes blink { 50%{opacity:0.5} }
+
+/* === VIEW 1: INTRO === */
+#view-1 { height: 100vh; display: flex; align-items: center; justify-content: center; }
+.center-content { text-align: center; }
+.logo-container {
+    width: 220px; height: 220px; border-radius: 50%; background: #000;
+    border: 4px solid var(--neon-blue); margin: 0 auto 30px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 40px rgba(0,243,255,0.2); position: relative;
+}
+.main-logo { width: 80%; border-radius: 50%; }
+.main-title { font-family: 'Orbitron'; font-size: 3.5rem; color: #fff; margin-bottom: 40px; text-shadow: 0 0 10px var(--neon-blue); }
+
+/* Botón Intro Rediseñado (Tipo Tarjeta) */
+.btn-intro-card {
+    background: linear-gradient(90deg, #111, #000); border: 1px solid var(--neon-blue);
+    display: flex; align-items: center; padding: 15px 40px; border-radius: 10px;
+    cursor: pointer; transition: 0.3s; margin: 0 auto;
+}
+.btn-intro-card:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,243,255,0.4); }
+.btn-icon-box { font-size: 2rem; color: var(--neon-blue); margin-right: 15px; }
+.btn-text-box { text-align: left; color: white; display: flex; flex-direction: column; }
+.btn-text-box span { font-size: 0.8rem; color: #888; }
+.btn-text-box strong { font-size: 1.2rem; font-family: 'Orbitron'; }
+
+/* === HEADER & BÚSQUEDA === */
+header {
+    height: 80px; background: rgba(5,5,5,0.95); border-bottom: 1px solid var(--blue);
+    display: flex; justify-content: space-between; align-items: center; padding: 0 30px;
+    position: sticky; top: 0; z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 15px; }
+.header-logo { height: 50px; }
+#current-course-title { font-family: 'Orbitron'; color: var(--gold); }
+
+/* Buscador con Marco de Colores */
+.search-wrapper { width: 35%; }
+.search-border-gradient {
+    display: flex; align-items: center; padding: 2px; border-radius: 30px;
+    background: linear-gradient(45deg, var(--neon-blue), var(--gold), var(--green), var(--blue));
+    background-size: 300% 300%; animation: gradientAnim 3s ease infinite;
+}
+@keyframes gradientAnim { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+.search-border-gradient input {
+    flex: 1; background: #000; border: none; padding: 10px 15px; border-radius: 30px 0 0 30px;
+    color: white; outline: none;
+}
+.search-border-gradient .search-icon {
+    padding: 0 15px; background: #000; color: #888; border-radius: 0 30px 30px 0; height: 36px; display: flex; align-items: center;
+}
+
+/* Nav Botones */
+.header-nav-btns { display: flex; gap: 10px; }
+.nav-btn {
+    width: 45px; height: 45px; background: #111; border: 1px solid var(--blue); color: var(--neon-blue);
+    border-radius: 10px; cursor: pointer; transition: 0.3s;
+}
+.nav-btn:hover { background: var(--blue); color: white; }
+
+/* === VISTA 9: INFO REDISEÑADA === */
+.info-grid-container {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto;
+}
+.info-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+    padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center;
+    transition: 0.3s;
+}
+.info-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1); transform:translateY(-5px); }
+.card-icon-head i { font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px; }
+.info-card h3 { font-family: 'Orbitron'; margin-bottom: 20px; }
+
+/* Redes Sociales Verticales */
+.social-links-vertical { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.social-btn {
+    display: flex; align-items: center; justify-content: center; gap: 15px; padding: 12px;
+    border-radius: 10px; text-decoration: none; color: white; background: rgba(255,255,255,0.05); transition: 0.3s;
+}
+.social-btn.fb:hover { background: #1877F2; }
+.social-btn.ig:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.social-btn.tk:hover { background: #000; border: 1px solid #fff; }
+
+/* Contactos */
+.contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; font-size: 1.1rem; }
+.contact-item i { color: var(--green); }
+
+/* === CARDS CURSO Y MENÚ (Ya existentes pero pulidos) === */
+.course-cards-container { display: flex; justify-content: center; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
+.course-card {
+    width: 250px; height: 350px; background: var(--card-bg); border: 1px solid #333; border-radius: 15px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+}
+.course-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
+.card-icon { font-size: 4rem; color: #333; margin-bottom: 20px; transition: 0.3s; }
+.course-card:hover .card-icon { color: var(--neon-blue); transform: scale(1.1); }
+
+.menu-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px; }
+.menu-card {
+    background: linear-gradient(90deg, #111 0%, #0a0a0a 100%); border: 1px solid #333; border-radius: 12px;
+    padding: 20px; display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.3s;
+}
+.menu-card:hover { border-color: var(--green); transform: translateX(5px); background: #151515; }
+.mc-icon {
+    width: 60px; height: 60px; background: #000; border-radius: 50%; border: 2px solid var(--blue);
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--neon-blue);
+}
+
+/* === GRIDS DE CONTENIDO === */
+.grid-members, .grid-albums, .grid-media, .nominee-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 30px;
+}
+.member-card, .album-item, .media-item, .nominee-card {
+    background: #080808; border: 1px solid #333; border-radius: 10px; overflow: hidden; position: relative;
+}
+.member-card { padding: 15px; display: flex; gap: 10px; align-items: center; }
+.mem-pic { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
+.album-cover, .media-item img { width: 100%; height: 150px; object-fit: cover; }
+.album-title { padding: 10px; text-align: center; color: white; }
+
+/* Botón Borrar Absoluto */
+.btn-delete-float {
+    position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); color: white;
+    border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; z-index: 10;
+}
+
+/* Modales y Botones */
+.btn-confirm { background: var(--blue); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+.btn-cancel { background: transparent; color: #888; border: none; padding: 10px 20px; cursor: pointer; }
+.fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--green); border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 0 20px var(--green); }
+.btn-nav-large {
+    background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 15px 40px;
+    border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+.btn-nav-large:hover { background: var(--gold); color: black; }
