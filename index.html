@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Informática Ultimate</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="bg-circuit"></div>
+    <div class="bg-overlay"></div>
+
+    <audio id="click-sound" src="sonido1.mp3" preload="auto"></audio>
+    <div id="toast-container"></div>
+    <div id="loader-overlay" class="hidden"><div class="tech-spinner"></div></div>
+
+    <div id="certificate-modal" class="modal-overlay hidden">
+        <div class="cert-frame-full">
+            <button class="btn-close-abs" onclick="closeModal('certificate-modal')"><i class="fas fa-times"></i></button>
+            <img id="cert-img-display" src="">
+        </div>
+    </div>
+
+    <div id="password-modal" class="modal-overlay hidden">
+        <div class="modal-tech">
+            <h3>ACCESO SISTEMA</h3>
+            <input type="password" id="admin-pass-input" placeholder="CONTRASEÑA">
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeModal('password-modal')">CANCELAR</button>
+                <button class="btn-confirm" onclick="verifyPassword()">ENTRAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="member-modal" class="modal-overlay hidden">
+        <div class="modal-tech large">
+            <h3>EDITAR PERFIL</h3>
+            <div class="grid-2">
+                <div class="col-left">
+                    <img id="prev-mem" src="https://via.placeholder.com/150">
+                    <input type="text" id="mem-photo" placeholder="URL Foto" onchange="document.getElementById('prev-mem').src=this.value">
+                </div>
+                <div class="col-right">
+                    <input type="text" id="mem-name" placeholder="Nombre">
+                    <input type="text" id="mem-last" placeholder="Apellido">
+                    <input type="text" id="mem-age" placeholder="Edad">
+                    <input type="text" id="mem-spec" placeholder="Especialidad">
+                    <input type="text" id="mem-future" placeholder="Futuro">
+                    <input type="text" id="mem-color" placeholder="Color Favorito">
+                    <input type="text" id="mem-music" placeholder="Link YouTube Música">
+                </div>
+            </div>
+            <input type="hidden" id="mem-id">
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeModal('member-modal')">CERRAR</button>
+                <button class="btn-confirm" onclick="saveMember()">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="album-modal" class="modal-overlay hidden">
+        <div class="modal-tech"><h3>NUEVO ÁLBUM</h3><input type="text" id="new-album-name" placeholder="Nombre"><input type="text" id="new-album-cover" placeholder="URL Portada"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('album-modal')">X</button><button class="btn-confirm" onclick="createAlbum()">CREAR</button></div></div>
+    </div>
+    <div id="media-modal" class="modal-overlay hidden">
+        <div class="modal-tech"><h3>SUBIR</h3><input type="text" id="new-media-url" placeholder="URL Foto/Video"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('media-modal')">X</button><button class="btn-confirm" onclick="uploadMedia()">SUBIR</button></div></div>
+    </div>
+    <div id="category-modal" class="modal-overlay hidden">
+        <div class="modal-tech"><h3>CATEGORÍA</h3><input type="text" id="cat-name" placeholder="Nombre"><input type="text" id="cat-cover" placeholder="URL Fondo"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('category-modal')">X</button><button class="btn-confirm" onclick="saveCategory()">CREAR</button></div></div>
+    </div>
+    <div id="nominee-modal" class="modal-overlay hidden">
+        <div class="modal-tech"><h3>PERSONA</h3><input type="text" id="nom-name" placeholder="Nombre"><input type="text" id="nom-photo" placeholder="URL Foto"><input type="text" id="nom-cert" placeholder="URL Certificado (Solo Ganador)"><input type="hidden" id="nom-type"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('nominee-modal')">X</button><button class="btn-confirm" onclick="saveNominee()">GUARDAR</button></div></div>
+    </div>
+    <div id="social-modal" class="modal-overlay hidden">
+        <div class="modal-tech"><h3>CONTACTO</h3><select id="social-type"><option value="social">Red Social</option><option value="phone">Teléfono</option></select><input type="text" id="social-name" placeholder="Nombre"><input type="text" id="social-val" placeholder="URL o Número"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('social-modal')">X</button><button class="btn-confirm" onclick="saveSocial()">GUARDAR</button></div></div>
+    </div>
+
+
+    <section id="view-1">
+        <div class="main-screen-content">
+            <h1 class="neon-title-main">INFORMÁTICA</h1>
+            
+            <div class="power-button-container" onclick="goToInterface(2)">
+                <div class="hex-btn">
+                    <i class="fas fa-power-off"></i>
+                </div>
+                <div class="btn-labels">
+                    <span class="lbl-welcome">BIENVENIDO</span>
+                    <span class="lbl-enter">INGRESAR AL SISTEMA</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <header id="global-header" class="hidden">
+        <div class="h-left">
+            <img src="logo1.png" class="h-logo">
+            <h2 id="header-title">PERFIL</h2>
+        </div>
+        <div class="h-center">
+            <div class="search-cyber">
+                <input type="text" id="search-input" placeholder="Buscar..." onkeyup="globalSearch()">
+                <div class="search-line"></div>
+            </div>
+        </div>
+        <div class="h-right">
+            <button onclick="goHome()"><i class="fas fa-home"></i></button>
+            <button onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <button onclick="goForward()"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <section id="view-2" class="hidden fade-in">
+            <div class="profiles-wrapper">
+                <div class="profile-card-tech neon-cyan" onclick="selectCourse('1ERO INFORMÁTICA')">
+                    <h3>1ERO<br>INFORMÁTICA</h3>
+                    <div class="icon-big"><i class="fas fa-laptop-code"></i></div>
+                    <div class="status-indicator">INGRESAR</div>
+                </div>
+                
+                <div class="profile-card-tech neon-blue" onclick="selectCourse('2DO INFORMÁTICA')">
+                    <h3>2DO<br>INFORMÁTICA</h3>
+                    <div class="icon-big"><i class="fas fa-microchip"></i></div>
+                    <div class="status-indicator">INGRESAR</div>
+                </div>
+
+                <div class="profile-card-tech neon-purple" onclick="selectCourse('3ERO INFORMÁTICA')">
+                    <h3>3ERO<br>INFORMÁTICA</h3>
+                    <div class="icon-big"><i class="fas fa-network-wired"></i></div>
+                    <div class="status-indicator">INGRESAR</div>
+                </div>
+            </div>
+            <button id="admin-trigger" onclick="toggleAdmin()">MODO ADMIN</button>
+        </section>
+
+        <section id="view-3" class="hidden fade-in">
+            <div class="dashboard-grid">
+                <div class="d-btn" onclick="goToInterface(4, 'integrantes')"><i class="fas fa-users"></i> INTEGRANTES</div>
+                <div class="d-btn" onclick="goToInterface(4, 'profesores')"><i class="fas fa-chalkboard-user"></i> PROFESORES</div>
+                <div class="d-btn" onclick="goToInterface(5, 'fotos')"><i class="fas fa-images"></i> FOTOS</div>
+                <div class="d-btn" onclick="goToInterface(5, 'videos')"><i class="fas fa-video"></i> VIDEOS</div>
+                <div class="d-btn" onclick="goToInterface(7)"><i class="fas fa-trophy"></i> PREMIACIONES</div>
+                <div class="d-btn" onclick="goToInterface(9)"><i class="fas fa-circle-info"></i> INFORMACIÓN</div>
+            </div>
+            <div id="search-results" class="hidden"></div>
+        </section>
+
+        <section id="view-4" class="hidden fade-in">
+            <h2 class="section-title" id="v4-title">LISTADO</h2>
+            <div class="data-cards-grid" id="members-list"></div>
+            <button class="fab hidden admin-only" onclick="openMemberModal()"><i class="fas fa-plus"></i></button>
+        </section>
+
+        <section id="view-5" class="hidden fade-in">
+            <h2 class="section-title" id="v5-title">ÁLBUMES</h2>
+            <div class="albums-grid" id="albums-list"></div>
+            <button class="fab hidden admin-only" onclick="openAlbumModal()"><i class="fas fa-folder-plus"></i></button>
+        </section>
+
+        <section id="view-6" class="hidden fade-in">
+            <h2 class="section-title" id="album-title">GALERÍA</h2>
+            <div class="size-opts">
+                <button onclick="setSize('small')">S</button>
+                <button onclick="setSize('medium')">M</button>
+                <button onclick="setSize('large')">L</button>
+            </div>
+            <div class="media-grid medium" id="media-list"></div>
+            <button class="fab hidden admin-only" onclick="openMediaModal()"><i class="fas fa-cloud-upload"></i></button>
+        </section>
+
+        <section id="view-7" class="hidden fade-in">
+            <h2 class="section-title">PREMIACIONES</h2>
+            
+            <div class="video-stage">
+                <div id="main-video-player" class="video-frame"></div>
+                <div class="admin-only hidden">
+                    <input type="text" id="award-video-url" placeholder="URL YouTube">
+                    <button onclick="saveAwardVideo()">Actualizar</button>
+                </div>
+            </div>
+
+            <h3 class="sub-title">CATEGORÍAS</h3>
+            <div class="categories-row" id="categories-list"></div>
+            <button class="fab hidden admin-only" onclick="openCategoryModal()"><i class="fas fa-plus"></i></button>
+        </section>
+
+        <section id="view-8" class="hidden fade-in">
+            <h2 class="section-title" id="cat-display-title">DETALLES</h2>
+            <div class="awards-split">
+                <div class="nominees-zone">
+                    <h3>NOMINADOS</h3>
+                    <div id="nominees-list" class="nominees-flex"></div>
+                    <button class="btn-sm hidden admin-only" onclick="openNomineeModal('nominee')">+ Nominado</button>
+                </div>
+                <div class="winner-zone">
+                    <h3>GANADOR</h3>
+                    <div id="winner-display"></div>
+                    <button class="btn-sm hidden admin-only" onclick="openNomineeModal('winner')">+ Ganador</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-9" class="hidden fade-in">
+            <h2 class="section-title">INFORMACIÓN</h2>
+            <div class="info-panels-container">
+                
+                <div class="info-panel blue-glow">
+                    <div class="panel-header">REDES SOCIALES</div>
+                    <div id="info-social-list" class="panel-body"></div>
+                </div>
+
+                <div class="info-panel purple-glow">
+                    <div class="panel-header">QUIÉNES SOMOS</div>
+                    <div class="panel-body text-body">
+                        <p>Somos estudiantes de informática apasionados por la innovación.</p>
+                        <p>Desarrollamos el futuro hoy.</p>
+                    </div>
+                </div>
+
+                <div class="info-panel cyan-glow">
+                    <div class="panel-header">CONTACTOS</div>
+                    <div id="info-contact-list" class="panel-body"></div>
+                </div>
+            </div>
+            <button class="fab hidden admin-only" onclick="document.getElementById('social-modal').classList.remove('hidden')">+</button>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
