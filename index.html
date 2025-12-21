@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFORMÁTICA_PROMO_2025</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="bg-noise"></div>
+    <div class="bg-gradient"></div>
+
+    <audio id="click-sound" src="sonido1.mp3" preload="auto"></audio>
+
+    <div id="loader-overlay" class="hidden">
+        <div class="spinner-neon"></div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="certificate-modal" class="modal-overlay hidden">
+        <div class="cert-frame-full animated-rgb-border">
+            <button class="btn-close-abs" onclick="closeModal('certificate-modal')"><i class="fas fa-times"></i></button>
+            <img id="cert-img-display" src="">
+        </div>
+    </div>
+
+    <div id="password-modal" class="modal-overlay hidden">
+        <div class="modal-glass small">
+            <h3><i class="fas fa-user-shield"></i> ACCESO ADMIN</h3>
+            <input type="password" id="admin-pass-input" placeholder="Contraseña...">
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModal('password-modal')">Cancelar</button>
+                <button class="btn-neon" onclick="verifyPassword()">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="universal-modal" class="modal-overlay hidden">
+        <div class="modal-glass">
+            <h3 id="univ-title">TÍTULO</h3>
+            <div id="univ-inputs">
+                </div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModal('universal-modal')">Cancelar</button>
+                <button class="btn-neon" id="univ-save-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="member-modal" class="modal-overlay hidden">
+        <div class="modal-glass large">
+            <h3><i class="fas fa-user-edit"></i> EDITAR PERFIL</h3>
+            <div class="grid-2">
+                <div class="col-img-preview">
+                    <img id="prev-mem" src="https://via.placeholder.com/150">
+                    <input type="text" id="mem-photo" placeholder="URL Foto" onchange="document.getElementById('prev-mem').src=this.value">
+                </div>
+                <div class="col-inputs">
+                    <div class="input-row">
+                        <input type="text" id="mem-name" placeholder="Nombre">
+                        <input type="text" id="mem-last" placeholder="Apellido">
+                    </div>
+                    <div class="input-row">
+                        <input type="text" id="mem-age" placeholder="Edad">
+                        <input type="text" id="mem-spec" placeholder="Especialidad">
+                    </div>
+                    <input type="text" id="mem-future" placeholder="Futuro / Meta">
+                    <input type="text" id="mem-color" placeholder="Color Favorito (Ej: #ff0000 o Red)">
+                    <input type="text" id="mem-music" placeholder="Link YouTube Música">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModal('member-modal')">Cancelar</button>
+                <button class="btn-neon" onclick="saveMember()">Guardar Ficha</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="nominee-modal" class="modal-overlay hidden">
+        <div class="modal-glass">
+            <h3>REGISTRO PREMIO</h3>
+            <input type="text" id="nom-name" placeholder="Nombre Completo">
+            <input type="text" id="nom-photo" placeholder="URL Foto Perfil">
+            <div id="winner-only-fields" class="hidden">
+                <input type="text" id="nom-cert" placeholder="URL Certificado">
+            </div>
+            <input type="hidden" id="nom-type">
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModal('nominee-modal')">Cancelar</button>
+                <button class="btn-neon" onclick="saveNominee()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <section id="view-1">
+        <div class="intro-container">
+            <div class="logo-anim-box">
+                <img src="logo1.png" class="logo-main" onerror="this.src='https://via.placeholder.com/200?text=LOGO'">
+                <div class="logo-pulse"></div>
+            </div>
+            <h1 class="title-main">INFORMÁTICA</h1>
+            <button class="btn-start" onclick="goToInterface(2)">
+                <span class="btn-txt">INGRESAR AL SISTEMA</span>
+                <span class="btn-glitch"></span>
+            </button>
+        </div>
+    </section>
+
+    <header id="global-header" class="hidden">
+        <div class="header-left">
+            <img src="logo1.png" class="header-logo">
+            <h2 id="header-course-name">PERFIL</h2>
+        </div>
+        
+        <div class="search-box-container hidden" id="search-box">
+            <input type="text" id="search-input" placeholder="Buscar..." onkeyup="globalSearch()">
+            <div class="search-border"></div>
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="goHome()"><i class="fas fa-home"></i></button>
+            <button class="nav-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <button class="nav-btn" onclick="goForward()"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <section id="view-2" class="hidden fade-in">
+            <h2 class="section-title">SELECCIONAR NIVEL</h2>
+            <div class="profiles-grid">
+                <div class="profile-card cyan" onclick="selectCourse('1ero Informática')">
+                    <div class="p-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>1ERO INFORMÁTICA</h3>
+                </div>
+                <div class="profile-card purple" onclick="selectCourse('2do Informática')">
+                    <div class="p-icon"><i class="fas fa-microchip"></i></div>
+                    <h3>2DO INFORMÁTICA</h3>
+                </div>
+                <div class="profile-card gold" onclick="selectCourse('3ero Informática')">
+                    <div class="p-icon"><i class="fas fa-network-wired"></i></div>
+                    <h3>3ERO INFORMÁTICA</h3>
+                </div>
+            </div>
+            <button id="admin-trigger" onclick="toggleAdmin()">MODO ADMIN: OFF</button>
+        </section>
+
+        <section id="view-3" class="hidden fade-in">
+            <div class="dashboard-tiles">
+                <div class="tile" onclick="goToInterface(4, 'integrantes')"><i class="fas fa-users"></i><span>INTEGRANTES</span></div>
+                <div class="tile" onclick="goToInterface(4, 'profesores')"><i class="fas fa-chalkboard-user"></i><span>PROFESORES</span></div>
+                <div class="tile" onclick="goToInterface(5, 'fotos')"><i class="fas fa-camera"></i><span>FOTOS</span></div>
+                <div class="tile" onclick="goToInterface(5, 'videos')"><i class="fas fa-video"></i><span>VIDEOS</span></div>
+                <div class="tile" onclick="goToInterface(5, 'specials')"><i class="fas fa-star"></i><span>VIDEOS ESP.</span></div>
+                <div class="tile" onclick="goToInterface(7)"><i class="fas fa-trophy"></i><span>PREMIACIONES</span></div>
+                <div class="tile" onclick="goToInterface(9)"><i class="fas fa-info-circle"></i><span>INFORMACIÓN</span></div>
+            </div>
+            <div id="search-results" class="hidden"></div>
+        </section>
+
+        <section id="view-4" class="hidden fade-in">
+            <h2 class="section-title" id="v4-title">LISTADO</h2>
+            <div class="flip-grid" id="members-list"></div>
+            <button class="fab hidden admin-only" onclick="openMemberModal()"><i class="fas fa-plus"></i></button>
+        </section>
+
+        <section id="view-5" class="hidden fade-in">
+            <h2 class="section-title" id="v5-title">COLECCIONES</h2>
+            <div class="albums-grid" id="albums-list"></div>
+            <button class="fab hidden admin-only" onclick="openUniversalModal('album')"><i class="fas fa-folder-plus"></i></button>
+        </section>
+
+        <section id="view-6" class="hidden fade-in">
+            <h2 class="section-title" id="album-title-display">GALERÍA</h2>
+            <div class="size-controls">
+                <button onclick="setMediaSize('small')">Pequeño</button>
+                <button onclick="setMediaSize('medium')">Mediano</button>
+                <button onclick="setMediaSize('large')">Grande</button>
+            </div>
+            <div class="media-grid medium" id="media-list"></div>
+            <button class="fab hidden admin-only" onclick="openUniversalModal('media')"><i class="fas fa-cloud-upload-alt"></i></button>
+        </section>
+
+        <section id="view-7" class="hidden fade-in">
+            <h2 class="section-title">GALA DE PREMIOS</h2>
+            
+            <div class="video-stage">
+                <div id="awards-main-video" class="video-frame"></div>
+                <div class="admin-only hidden center-text mt-2">
+                    <button class="btn-neon small" onclick="openUniversalModal('awardVideo')">Cambiar Video</button>
+                </div>
+            </div>
+
+            <h3 class="subtitle-neon">CATEGORÍAS</h3>
+            <div class="categories-grid" id="categories-list"></div>
+            <button class="fab hidden admin-only" onclick="openUniversalModal('category')"><i class="fas fa-plus-circle"></i></button>
+        </section>
+
+        <section id="view-8" class="hidden fade-in">
+            <h2 class="section-title" id="award-cat-title">DETALLES</h2>
+            <div class="awards-arena">
+                <div class="col-nominees">
+                    <div class="col-head">NOMINADOS</div>
+                    <div id="nominees-list" class="nominees-flex"></div>
+                    <button class="btn-ghost small hidden admin-only" onclick="openNomineeModal('nominee')">+ Agregar</button>
+                </div>
+                <div class="col-winner">
+                    <div class="col-head winner">GANADOR</div>
+                    <div id="winner-display" class="winner-stage"></div>
+                    <button class="btn-gold small hidden admin-only" onclick="openNomineeModal('winner')">+ Definir</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-9" class="hidden fade-in">
+            <h2 class="section-title">INFORMACIÓN</h2>
+            <div class="info-panels-container">
+                <div class="info-panel cyan-glow">
+                    <div class="panel-head">REDES SOCIALES</div>
+                    <div id="info-social-list" class="panel-body"></div>
+                </div>
+                <div class="info-panel purple-glow">
+                    <div class="panel-head">¿QUIÉNES SOMOS?</div>
+                    <div class="panel-body text-content">
+                        <p>Somos el futuro de la tecnología. Estudiantes apasionados por la innovación y el desarrollo.</p>
+                        <p>Nuestro objetivo es liderar el cambio digital.</p>
+                    </div>
+                </div>
+                <div class="info-panel gold-glow">
+                    <div class="panel-head">CONTACTOS</div>
+                    <div id="info-contact-list" class="panel-body"></div>
+                </div>
+            </div>
+            <button class="fab hidden admin-only" onclick="openUniversalModal('social')"><i class="fas fa-plus"></i></button>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
